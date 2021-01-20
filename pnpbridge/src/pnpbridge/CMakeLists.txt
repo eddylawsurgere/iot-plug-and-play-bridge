@@ -37,6 +37,7 @@ set(pnp_helper_c_core_files
     ./common/pnp_device_client.c
     ./common/pnp_dps.c
     ./common/pnp_protocol.c
+    ./common/certs.c
 )
 
 # Pnp Common Helper headers
@@ -45,6 +46,7 @@ set(pnp_helper_h_core_files
     ./common/pnp_dps.h
     ./common/pnp_protocol.h
     ./common/pnp_bridge_client.h
+    ./common/certs.h
 )
 
 # set(install_staticlibs
@@ -91,12 +93,12 @@ set(pnp_bridge_common_libs
     iothub_client_mqtt_ws_transport
     parson
     umqtt
-    msr_riot
+#    msr_riot
     hsm_security_client
     prov_auth_client
     prov_device_client
     prov_mqtt_transport
-    utpm
+#    utpm
 )
 
 if(WIN32)
@@ -122,11 +124,12 @@ add_library(${PROJECT_NAME} STATIC
 add_subdirectory(tests)
 add_subdirectory(samples)
 
-if(WIN32)
+#Eddy
+# if(WIN32)
 
-else()
-add_subdirectory(module)
-endif()
+# else()
+# add_subdirectory(module)
+# endif()
 
 if(WIN32)
 # Ole32 (COM) is used by camera health monitoring adapter

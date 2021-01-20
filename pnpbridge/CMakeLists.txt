@@ -9,6 +9,27 @@ if (POLICY CMP0042)
     cmake_policy(SET CMP0042 NEW)
 endif()
 
+# # Eddy *****************
+# option(use_32bit "set 32 bit." OFF)
+# if(${use_32bit})
+#     message("Build 32 bit")
+#     set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -m32 -Werror -rdynamic")
+#     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+# endif()
+
+
+# Eddy
+# Conditionally use the SDK trusted certs in the samples (is set to true in cmake toolchain file)
+# if ( ${use_sample_trusted_cert})
+#     message("Eddy:SET_TRUSTED_CERT")
+#     option(use_sample_trusted_cert "set trust cert" ON)
+#     # include_directories(./deps/azure-iot-sdk-c-pnp/certs)
+#     # set(pnp_helper_c_core_files ${pnp_helper_c_core_files} ./deps/azure-iot-sdk-c-pnp/certs/certs.c)
+#     add_definitions(-DSET_TRUSTED_CERT)
+#     add_definitions(-DSET_TRUSTED_CERT_IN_SAMPLES)
+# endif()
+
+
 #set(run_e2e_tests OFF CACHE BOOL "skip e2e tests" FORCE)
 # TODO: Skip azure c sdk unit tests
 

@@ -7,4 +7,7 @@
 /PnpBridge/src/PnpBridge/x64/Debug
 /PnpBridge/src/PnpBridge/PnpBridge.sln
 .vscode
-/PnpBridge/deps/
+/pnpbridge/deps/
+/pnpbridge/cmake/
+/pnpbridge/deps/azure-iot-sdk-c-pnp/cmake/
+

@@ -19,12 +19,6 @@
 #include "azure_prov_client/prov_transport_mqtt_client.h"
 #include "azure_prov_client/prov_security_factory.h"
 
-//#ifdef SET_TRUSTED_CERT_IN_SAMPLES
-//Eddy
-#include "azure_c_shared_utility/shared_util_options.h"
-#include "certs.h"
-//#endif
-
 // Format of custom DPS payload sent when registering a PnP device.
 static const char g_dps_PayloadFormatForModelId[] = "{\"modelId\":\"%s\"}";
 
@@ -79,9 +73,6 @@ static void provisioningRegisterCallback(PROV_DEVICE_RESULT registerResult, cons
 
 IOTHUB_DEVICE_CLIENT_HANDLE PnP_CreateDeviceClientHandle_ViaDps(const PNP_DEVICE_CONFIGURATION* pnpDeviceConfiguration)
 {
-printf("*** Eddy : PnP_CreateDeviceClientHandle_ViaDps\n");
-
-
     IOTHUB_DEVICE_CLIENT_HANDLE deviceHandle = NULL;
     bool result;
 
@@ -117,17 +108,6 @@ printf("*** Eddy : PnP_CreateDeviceClientHandle_ViaDps\n");
         LogError("Setting provisioning tracing on failed, error=%d", provDeviceResult);
         result = false;
     }
-//#ifdef SET_TRUSTED_CERT_IN_SAMPLES
-    //Eddy
-    // Setting the Trusted Certificate. This is only necessary on systems without
-    // built in certificate stores.
-    else if ((provDeviceResult = Prov_Device_SetOption(provDeviceHandle, OPTION_TRUSTED_CERT, certificates)) != PROV_DEVICE_RESULT_OK)
-    {
-        LogError("Setting provisioning tracing on failed, error=%d", provDeviceResult);
-        result = false;
-    }
-//#endif
-
     // This step indicates the ModelId of the device to DPS.  This allows the service to (optionally) perform custom operations,
     // such as allocating a different IoT Hub to devices based on their ModelId.
     else if ((provDeviceResult = Prov_Device_Set_Provisioning_Payload(provDeviceHandle, STRING_c_str(modelIdPayload))) != PROV_DEVICE_RESULT_OK)

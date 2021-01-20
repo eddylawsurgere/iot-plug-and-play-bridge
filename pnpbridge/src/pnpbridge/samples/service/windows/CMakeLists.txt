@@ -70,12 +70,12 @@ set(pnp_bridge_common_libs
     iothub_client_mqtt_ws_transport
     parson
     umqtt
-    msr_riot
+#    msr_riot
     hsm_security_client
     prov_auth_client
     prov_device_client
     prov_mqtt_transport
-    utpm
+#    utpm
     pnpbridge_adapters
     pnpbridge
     pnpbridge_modbus

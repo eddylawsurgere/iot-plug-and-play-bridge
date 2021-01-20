@@ -4,26 +4,32 @@
 cmake_minimum_required(VERSION 2.8.11)
 #this is CMakeLists for pnp_bridge
 
-set(PROJECT_NAME pnpbridge_bin)
+set(PROJECT_NAME pnpbridgesvc)
 
 if(POLICY CMP0042)
     cmake_policy(SET CMP0042 NEW)
 endif()
 
-compileAsC99()
-
 # Core PnpBridge C Files
 set(pnp_bridge_c_core_files
-    ./main.c
+    ./pnpbridgesvc.cpp
+    ./pnpbridgesvc_installer.cpp
+    ./servicebase.cpp
 )
 
 # Core PnpBridge headers
 set(pnp_bridge_h_core_files
+    ./pnpbridgesvc.h
+    ./servicebase.h
 )
 
 # set(install_staticlibs
     # ${PROJECT_NAME}
 # )
+
+add_definitions("-D_UNICODE")
+
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
 
 IF(WIN32)
     #windows needs this define
@@ -39,6 +45,7 @@ add_definitions(-DPNP_LOGGING_ENABLED)
 # )
 
 set(pnp_bridge_INC_FOLDER ${CMAKE_CURRENT_LIST_DIR} CACHE INTERNAL "this is what needs to be included if using pnp_bridge lib" FORCE)
+set(pnp_bridge_common_pnp_inc ${CMAKE_CURRENT_LIST_DIR}/../../common CACHE INTERNAL "this is what needs to be included if using pnp_bridge lib" FORCE)
 
 include_directories(inc)
 include_directories(common)
@@ -49,10 +56,9 @@ include_directories(../../deps/azure-iot-sdk-c-pnp/c-utility/deps/umock-c/inc)
 include_directories(../../deps/azure-iot-sdk-c-pnp/iothub_client/inc)
 include_directories(../../deps/azure-iot-sdk-c-pnp/provisioning_client/inc)
 include_directories(${pnp_bridge_INC_FOLDER})
+include_directories(${pnp_bridge_common_pnp_inc})
 
-if(WIN32)
-include_directories(../../../../deps/azure-iot-sdk-c-pnp/c-utility/pal/windows)
-endif()
+include_directories(../../deps/azure-iot-sdk-c-pnp/c-utility/pal/windows)
 
 set(pnp_bridge_common_libs
     aziotsharedutil
@@ -64,39 +70,40 @@ set(pnp_bridge_common_libs
     iothub_client_mqtt_ws_transport
     parson
     umqtt
-#    msr_riot
+    msr_riot
     hsm_security_client
     prov_auth_client
     prov_device_client
     prov_mqtt_transport
-#    utpm
-    pnpbridge
+    utpm
     pnpbridge_adapters
+    pnpbridge
     pnpbridge_modbus
-    pnpbridge_mqtt
     pnpbridge_serial
     pnpbridge_environmentalsensor
 )
+
 
 if(WIN32)
 set(pnp_bridge_common_libs
     ${pnp_bridge_common_libs}
     pnpbridge_camera
+    pnpbridge_mqtt
     pnpbridge_bluetoothsensor
     pnpbridge_coredevicehealth
 )
 endif()
+
+set(pnp_bridge_common_libs
+    ${pnp_bridge_common_libs}
+)
 
 add_executable(${PROJECT_NAME}
     ${pnp_bridge_c_core_files}
     ${pnp_bridge_h_core_files}
 )
 
-if(WIN32)
-# Ole32 (COM) is used by camera health monitoring adapter
-target_link_libraries(${PROJECT_NAME} ${pnp_bridge_common_libs} cfgmgr32 mfplat mfsensorgroup Ole32)
-else()
-target_link_libraries(${PROJECT_NAME} ${pnp_bridge_common_libs})
-endif()
+#configure_file(./src/pnpbridge_config_schema.json pnpbridge_config_schema.json COPYONLY)
 
-configure_file(./config.json config.json COPYONLY)
+# Ole32 (COM) is used by camera health monitoring adapter
+target_link_libraries(${PROJECT_NAME} ${pnp_bridge_common_libs} Ole32)

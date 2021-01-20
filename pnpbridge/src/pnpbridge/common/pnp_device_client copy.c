@@ -141,12 +141,10 @@ static IOTHUB_MODULE_CLIENT_HANDLE AllocateModuleClientHandle(const PNP_DEVICE_C
 
     if (pnpModuleConfiguration->securityType == PNP_CONNECTION_SECURITY_TYPE_CONNECTION_STRING)
     {
-        //Eddy
-        printf("**** Eddy AllocateModuleClientHandle ***\n");
-        // if ((moduleClientHandle = IoTHubModuleClient_CreateFromEnvironment(MQTT_Protocol)) == NULL)
-        // {
-        //     LogError("Failure creating IotHub module client from environment info.");
-        // }
+        if ((moduleClientHandle = IoTHubModuleClient_CreateFromEnvironment(MQTT_Protocol)) == NULL)
+        {
+            LogError("Failure creating IotHub module client from environment info.");
+        }
     }
 
     return moduleClientHandle;
