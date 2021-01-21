@@ -400,9 +400,7 @@ IOTHUB_CLIENT_RESULT PnpAdapterManager_InitializeClientHandle(
     }
     else
     {
-        //Eddy
-//        componentHandle->clientHandle = g_PnpBridge->IotHandle.u1.IotModule.moduleHandle;
-        componentHandle->clientHandle = g_PnpBridge->IotHandle.u1.IotDevice.deviceHandle;
+        componentHandle->clientHandle = g_PnpBridge->IotHandle.u1.IotModule.moduleHandle;
     }
 
 exit:

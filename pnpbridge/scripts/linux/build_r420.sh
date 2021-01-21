@@ -24,8 +24,8 @@ toolchainfile="/home/etk/Projects/lib_sources/toolchainfile_r420.cmake"
 cmake_install_prefix="/home/etk/Projects/libs/pnp/r420"
 no_logging=OFF
 prov_auth=ON #OFF
-prov_use_tpm_simulator=OFF #OFF
-use_edge_modules=OFF #OFF
+prov_use_tpm_simulator=ON #OFF
+use_edge_modules=ON #OFF
 
 usage ()
 {
@@ -125,13 +125,13 @@ process_args ()
 
 process_args $*
 
-# rm -r -f $build_folder
-# mkdir -p $build_folder
+rm -r -f $build_folder
+mkdir -p $build_folder
 pushd $build_folder
 #cmake $toolchainfile $cmake_install_prefix -Drun_valgrind:BOOL=$run_valgrind -DcompileOption_C:STRING="$extracloptions" -Drun_e2e_tests:BOOL=$run_e2e_tests -Drun_sfc_tests:BOOL=$run-sfc-tests -Drun_longhaul_tests=$run_longhaul_tests -Duse_amqp:BOOL=$build_amqp -Duse_http:BOOL=$build_http -Duse_mqtt:BOOL=$build_mqtt -Ddont_use_uploadtoblob:BOOL=$no_blob -Drun_unittests:BOOL=$run_unittests -Dbuild_python:STRING=$build_python -Dno_logging:BOOL=$no_logging $build_root -Duse_prov_client:BOOL=$prov_auth -Duse_tpm_simulator:BOOL=$prov_use_tpm_simulator -Duse_edge_modules=$use_edge_modules
 #cmake $toolchainfile $cmake_install_prefix -Drun_valgrind:BOOL=$run_valgrind -DcompileOption_C:STRING="$extracloptions" -Drun_e2e_tests:BOOL=$run_e2e_tests -Drun_sfc_tests:BOOL=$run-sfc-tests -Drun_longhaul_tests=$run_longhaul_tests -Duse_amqp:BOOL=$build_amqp -Duse_http:BOOL=$build_http -Duse_mqtt:BOOL=$build_mqtt -Ddont_use_uploadtoblob:BOOL=$no_blob -Drun_unittests:BOOL=$run_unittests -Dbuild_python:STRING=$build_python -Dno_logging:BOOL=$no_logging $build_root -Duse_prov_client:BOOL=$prov_auth -Duse_tpm_simulator:BOOL=$prov_use_tpm_simulator -Duse_edge_modules=$use_edge_modules -DSET_TRUSTED_CERT:BOOL=ON
 #cmake $toolchainfile $cmake_install_prefix -Drun_valgrind:BOOL=$run_valgrind -DcompileOption_C:STRING="$extracloptions" -Drun_e2e_tests:BOOL=$run_e2e_tests -Drun_sfc_tests:BOOL=$run-sfc-tests -Drun_longhaul_tests=$run_longhaul_tests -Duse_amqp:BOOL=$build_amqp -Duse_http:BOOL=$build_http -Duse_mqtt:BOOL=$build_mqtt -Ddont_use_uploadtoblob:BOOL=$no_blob -Drun_unittests:BOOL=$run_unittests -Dbuild_python:STRING=$build_python -Dno_logging:BOOL=$no_logging $build_root -Duse_prov_client:BOOL=$prov_auth -Duse_tpm_simulator:BOOL=$prov_use_tpm_simulator -Duse_edge_modules=$use_edge_modules -DSET_TRUSTED_CERT:BOOL=on -Dhsm_type_symm_key=ON -Duse_sample_trusted_cert:BOOL=on -Duse_baltimore_cert::BOOL=on
-cmake $toolchainfile $cmake_install_prefix -Drun_valgrind:BOOL=$run_valgrind -DcompileOption_C:STRING="$extracloptions" -Drun_e2e_tests:BOOL=$run_e2e_tests -Drun_sfc_tests:BOOL=$run-sfc-tests -Drun_longhaul_tests=$run_longhaul_tests -Duse_amqp:BOOL=$build_amqp -Duse_http:BOOL=$build_http -Duse_mqtt:BOOL=$build_mqtt -Ddont_use_uploadtoblob:BOOL=$no_blob -Drun_unittests:BOOL=$run_unittests -Dbuild_python:STRING=$build_python -Dno_logging:BOOL=$no_logging $build_root -Duse_prov_client:BOOL=$prov_auth -Duse_tpm_simulator:BOOL=$prov_use_tpm_simulator -Duse_edge_modules=$use_edge_modules -Duse_sample_trusted_cert:BOOL=on -Duse_default_uuid:BOOL=on
+cmake $toolchainfile $cmake_install_prefix -Drun_valgrind:BOOL=$run_valgrind -DcompileOption_C:STRING="$extracloptions" -Drun_e2e_tests:BOOL=$run_e2e_tests -Drun_sfc_tests:BOOL=$run-sfc-tests -Drun_longhaul_tests=$run_longhaul_tests -Duse_amqp:BOOL=$build_amqp -Duse_http:BOOL=$build_http -Duse_mqtt:BOOL=$build_mqtt -Ddont_use_uploadtoblob:BOOL=$no_blob -Drun_unittests:BOOL=$run_unittests -Dbuild_python:STRING=$build_python -Dno_logging:BOOL=$no_logging $build_root -Duse_prov_client:BOOL=$prov_auth -Duse_tpm_simulator:BOOL=$prov_use_tpm_simulator -Duse_edge_modules=$use_edge_modules -DSET_TRUSTED_CERT:BOOL=ON -Duse_default_uuid:BOOL=on
 
 if [ "$make" = true ]
 then
