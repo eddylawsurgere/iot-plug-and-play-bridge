@@ -49,6 +49,16 @@ set(pnp_helper_h_core_files
     ./common/certs.h
 )
 
+# Eddy -
+# Pnp Common Helper C Files
+set(pnp_helper_c_core_files_ws
+    ./common/pnp_device_client_ws.c
+    ./common/pnp_dps_ws.c
+    ./common/pnp_protocol.c
+    ./common/certs.c
+)
+# - Eddy
+
 # set(install_staticlibs
     # ${PROJECT_NAME}
 # )
@@ -98,10 +108,30 @@ set(pnp_bridge_common_libs
     prov_auth_client
     prov_device_client
     prov_mqtt_transport
+#    utpm
+)
+
+# Eddy -
+set(pnp_bridge_common_libs_ws
+    aziotsharedutil
+    iothub_client
+    iothub_client_http_transport
+    iothub_client_amqp_transport
+    iothub_client_amqp_ws_transport
+    iothub_client_mqtt_transport
+    iothub_client_mqtt_ws_transport
+    parson
+    umqtt
+#    msr_riot
+    hsm_security_client
+    prov_auth_client
+    prov_device_client
+    prov_mqtt_transport
 # Eddy
     prov_mqtt_ws_transport
 #    utpm
 )
+# - Eddy
 
 if(WIN32)
 set(pnp_bridge_common_libs
@@ -113,6 +143,14 @@ add_library(${PROJECT_NAME} STATIC
     ${pnp_bridge_c_core_files}
     ${pnp_bridge_h_core_files}
     ${pnp_helper_c_core_files}
+    ${pnp_helper_h_core_files}
+)
+
+# Eddy
+add_library("${PROJECT_NAME}_ws" STATIC 
+    ${pnp_bridge_c_core_files}
+    ${pnp_bridge_h_core_files}
+    ${pnp_helper_c_core_files_ws}
     ${pnp_helper_h_core_files}
 )
 
@@ -138,4 +176,9 @@ if(WIN32)
 target_link_libraries(${PROJECT_NAME} ${pnp_bridge_common_libs} cfgmgr32 mfplat mfsensorgroup Ole32 runtimeobject)
 else()
 target_link_libraries(${PROJECT_NAME} ${pnp_bridge_common_libs})
+
+
+# Eddy
+#add_definitions(-DMQTT_OVER_WS)
+target_link_libraries("${PROJECT_NAME}_ws" ${pnp_bridge_common_libs_ws})
 endif()

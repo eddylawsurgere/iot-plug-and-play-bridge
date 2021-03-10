@@ -18,10 +18,12 @@
 #include "azure_prov_client/prov_device_client.h"
 #include "azure_prov_client/prov_security_factory.h"
 
-#include "iothubtransportmqtt.h"
-#include "azure_prov_client/prov_transport_mqtt_client.h"
-
 // Eddy {
+//#ifdef MQTT_OVER_WS
+#include "iothubtransportmqtt_websockets.h"
+#include "azure_prov_client/prov_transport_mqtt_ws_client.h"
+//#endif
+
 #ifdef SET_TRUSTED_CERT
 #include "azure_c_shared_utility/shared_util_options.h"
 #include "certs.h"
@@ -93,7 +95,8 @@ IOTHUB_DEVICE_CLIENT_HANDLE PnP_CreateDeviceClientHandle_ViaDps(const PNP_DEVICE
     g_pnpDpsRegistrationStatus = PNP_DPS_REGISTRATION_NOT_COMPLETE;
 // Eddy {
     PROV_DEVICE_TRANSPORT_PROVIDER_FUNCTION prov_transport;
-    prov_transport = Prov_Device_MQTT_Protocol;
+    prov_transport = Prov_Device_MQTT_WS_Protocol;
+    LogInfo("Using Prov_Device_MQTT_WS_Protocol");
 // } Eddy
 
     if ((modelIdPayload = STRING_construct_sprintf(g_dps_PayloadFormatForModelId, pnpDeviceConfiguration->modelId)) == NULL)
@@ -181,7 +184,8 @@ IOTHUB_DEVICE_CLIENT_HANDLE PnP_CreateDeviceClientHandle_ViaDps(const PNP_DEVICE
     {
 // Eddy {
         IOTHUB_CLIENT_TRANSPORT_PROVIDER iothub_transport;
-        iothub_transport = MQTT_Protocol;
+        iothub_transport = MQTT_WebSocket_Protocol;
+        LogInfo("Using MQTT_WebSocket_Protocol");
 // } Eddy
 
         if (iothub_security_init(IOTHUB_SECURITY_TYPE_SYMMETRIC_KEY) != 0)

@@ -12,9 +12,9 @@
 
 // Eddy {
 // #ifdef MQTT_OVER_WS
-// #include "iothubtransportmqtt_websockets.h"
+#include "iothubtransportmqtt_websockets.h"
 // #else
-#include "iothubtransportmqtt.h"
+// #include "iothubtransportmqtt.h"
 // #endif
 // } Eddy
 
@@ -46,10 +46,10 @@ static IOTHUB_DEVICE_CLIENT_HANDLE AllocateDeviceClientHandle(const PNP_DEVICE_C
 // Eddy {
         IOTHUB_CLIENT_TRANSPORT_PROVIDER transport_provider;
 // #ifdef MQTT_OVER_WS
-//         transport_provider = MQTT_WebSocket_Protocol;
-//         LogInfo("Using MQTT_WebSocket_Protocol");
+        transport_provider = MQTT_WebSocket_Protocol;
+        LogInfo("Using MQTT_WebSocket_Protocol");
 // #else
-        transport_provider = MQTT_Protocol;
+//         transport_provider = MQTT_Protocol;
 // #endif
 //        if ((deviceHandle = IoTHubDeviceClient_CreateFromConnectionString(pnpDeviceConfiguration->u.connectionString, MQTT_Protocol)) == NULL)
         if ((deviceHandle = IoTHubDeviceClient_CreateFromConnectionString(pnpDeviceConfiguration->u.connectionString, transport_provider)) == NULL)
@@ -161,9 +161,9 @@ static IOTHUB_MODULE_CLIENT_HANDLE AllocateModuleClientHandle(const PNP_DEVICE_C
 // Eddy {
         IOTHUB_CLIENT_TRANSPORT_PROVIDER transport_provider;
 // #ifdef MQTT_OVER_WS
-//         transport_provider = MQTT_WebSocket_Protocol;
+        transport_provider = MQTT_WebSocket_Protocol;
 // #else
-        transport_provider = MQTT_Protocol;
+//         transport_provider = MQTT_Protocol;
 // #endif
 // } Eddy
 
