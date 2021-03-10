@@ -9,7 +9,16 @@
 #include "iothub_device_client.h"
 #include "iothub_module_client.h"
 #include "iothub_client_options.h"
+
+// Eddy {
+//#include "iothubtransportmqtt.h"
+#ifdef MQTT_OVER_WS
+#include "iothubtransportmqtt_websockets.h"
+#else
 #include "iothubtransportmqtt.h"
+#endif
+// } Eddy
+
 #include "pnp_device_client.h"
 #include "pnp_dps.h"
 
@@ -25,6 +34,7 @@
 #include "certs.h"
 #endif // SET_TRUSTED_CERT
 
+
 //
 // AllocateDeviceClientHandle does the actual createHandle call, depending on the security type
 //
@@ -34,7 +44,15 @@ static IOTHUB_DEVICE_CLIENT_HANDLE AllocateDeviceClientHandle(const PNP_DEVICE_C
 
     if (pnpDeviceConfiguration->securityType == PNP_CONNECTION_SECURITY_TYPE_CONNECTION_STRING)
     {
-        if ((deviceHandle = IoTHubDeviceClient_CreateFromConnectionString(pnpDeviceConfiguration->u.connectionString, MQTT_Protocol)) == NULL)
+// Eddy {
+#ifdef MQTT_OVER_WS
+        IOTHUB_CLIENT_TRANSPORT_PROVIDER transport_provider = MQTT_WebSocket_Protocol;
+#else
+        IOTHUB_CLIENT_TRANSPORT_PROVIDER transport_provider = MQTT_Protocol;
+#endif
+//        if ((deviceHandle = IoTHubDeviceClient_CreateFromConnectionString(pnpDeviceConfiguration->u.connectionString, MQTT_Protocol)) == NULL)
+        if ((deviceHandle = IoTHubDeviceClient_CreateFromConnectionString(pnpDeviceConfiguration->u.connectionString, transport_provider)) == NULL)
+// } Eddy
         {
             LogError("Failure creating IotHub client.  Hint: Check your connection string");
         }
@@ -139,9 +157,20 @@ static IOTHUB_MODULE_CLIENT_HANDLE AllocateModuleClientHandle(const PNP_DEVICE_C
 {
     IOTHUB_MODULE_CLIENT_HANDLE moduleClientHandle = NULL;
 
+// Eddy {
+#ifdef MQTT_OVER_WS
+        IOTHUB_CLIENT_TRANSPORT_PROVIDER transport_provider = MQTT_WebSocket_Protocol;
+#else
+        IOTHUB_CLIENT_TRANSPORT_PROVIDER transport_provider = MQTT_Protocol;
+#endif
+// } Eddy
+
     if (pnpModuleConfiguration->securityType == PNP_CONNECTION_SECURITY_TYPE_CONNECTION_STRING)
     {
-        if ((moduleClientHandle = IoTHubModuleClient_CreateFromEnvironment(MQTT_Protocol)) == NULL)
+// Eddy {
+        //if ((moduleClientHandle = IoTHubModuleClient_CreateFromEnvironment(MQTT_Protocol)) == NULL)
+        if ((moduleClientHandle = IoTHubModuleClient_CreateFromEnvironment(transport_provider)) == NULL)
+// } Eddy
         {
             LogError("Failure creating IotHub module client from environment info.");
         }

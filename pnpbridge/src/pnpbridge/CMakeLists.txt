@@ -98,6 +98,8 @@ set(pnp_bridge_common_libs
     prov_auth_client
     prov_device_client
     prov_mqtt_transport
+# Eddy
+    prov_mqtt_ws_transport
 #    utpm
 )
 
@@ -124,12 +126,12 @@ add_library(${PROJECT_NAME} STATIC
 add_subdirectory(tests)
 add_subdirectory(samples)
 
-#Eddy
-# if(WIN32)
+##Eddy
+if(WIN32)
 
-# else()
-# add_subdirectory(module)
-# endif()
+else()
+add_subdirectory(module)
+endif()
 
 if(WIN32)
 # Ole32 (COM) is used by camera health monitoring adapter

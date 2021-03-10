@@ -29,7 +29,11 @@ if ( ${SET_TRUSTED_CERT})
     add_definitions(-DSET_TRUSTED_CERT)
     #add_definitions(-DSET_TRUSTED_CERT_IN_SAMPLES)
 endif()
-
+if (${MQTT_OVER_WS})
+    message("Eddy:MQTT_OVER_WS")
+    add_definitions(-DMQTT_OVER_WS)
+endif()
+# end of change by Eddy
 
 #set(run_e2e_tests OFF CACHE BOOL "skip e2e tests" FORCE)
 # TODO: Skip azure c sdk unit tests

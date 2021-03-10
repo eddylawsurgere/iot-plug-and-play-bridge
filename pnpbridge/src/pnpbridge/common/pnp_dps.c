@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "iothub_device_client.h"
-#include "iothubtransportmqtt.h"
+//#include "iothubtransportmqtt.h"  // Eddy
 #include "pnp_device_client.h"
 
 #include "azure_c_shared_utility/strings.h"
@@ -16,14 +16,22 @@
 // DPS related header files
 #include "azure_prov_client/iothub_security_factory.h"
 #include "azure_prov_client/prov_device_client.h"
-#include "azure_prov_client/prov_transport_mqtt_client.h"
 #include "azure_prov_client/prov_security_factory.h"
 
-//Eddy
+// Eddy {
+#ifdef MQTT_OVER_WS
+#include "iothubtransportmqtt_websockets.h"
+#include "azure_prov_client/prov_transport_mqtt_ws_client.h"
+#else
+#include "iothubtransportmqtt.h"
+#include "azure_prov_client/prov_transport_mqtt_client.h"
+#endif
+
 #ifdef SET_TRUSTED_CERT
 #include "azure_c_shared_utility/shared_util_options.h"
 #include "certs.h"
 #endif
+// } Eddy
 
 // Format of custom DPS payload sent when registering a PnP device.
 static const char g_dps_PayloadFormatForModelId[] = "{\"modelId\":\"%s\"}";
@@ -88,6 +96,15 @@ IOTHUB_DEVICE_CLIENT_HANDLE PnP_CreateDeviceClientHandle_ViaDps(const PNP_DEVICE
 
     LogInfo("Initiating DPS client to retrieve IoT Hub connection information");
     g_pnpDpsRegistrationStatus = PNP_DPS_REGISTRATION_NOT_COMPLETE;
+// Eddy {
+    PROV_DEVICE_TRANSPORT_PROVIDER_FUNCTION prov_transport;
+#ifdef MQTT_OVER_WS
+        prov_transport = Prov_Device_MQTT_WS_Protocol;
+        LogInfo("Using MQTT over web sockets");
+#else
+        prov_transport = Prov_Device_MQTT_Protocol;
+#endif
+// } Eddy
 
     if ((modelIdPayload = STRING_construct_sprintf(g_dps_PayloadFormatForModelId, pnpDeviceConfiguration->modelId)) == NULL)
     {
@@ -104,7 +121,10 @@ IOTHUB_DEVICE_CLIENT_HANDLE PnP_CreateDeviceClientHandle_ViaDps(const PNP_DEVICE
         LogError("prov_dev_security_init failed");
         result = false;
     }
-    else if ((provDeviceHandle = Prov_Device_Create(pnpDeviceConfiguration->u.dpsConnectionAuth.endpoint, pnpDeviceConfiguration->u.dpsConnectionAuth.idScope, Prov_Device_MQTT_Protocol)) == NULL)
+// Eddy {
+    //else if ((provDeviceHandle = Prov_Device_Create(pnpDeviceConfiguration->u.dpsConnectionAuth.endpoint, pnpDeviceConfiguration->u.dpsConnectionAuth.idScope, Prov_Device_MQTT_Protocol)) == NULL)
+    else if ((provDeviceHandle = Prov_Device_Create(pnpDeviceConfiguration->u.dpsConnectionAuth.endpoint, pnpDeviceConfiguration->u.dpsConnectionAuth.idScope, prov_transport)) == NULL)
+// } Eddy
     {
         LogError("Failed calling Prov_Device_Create");
         result = false;
@@ -169,12 +189,22 @@ IOTHUB_DEVICE_CLIENT_HANDLE PnP_CreateDeviceClientHandle_ViaDps(const PNP_DEVICE
 
     if (result == true)
     {
+// Eddy {
+        IOTHUB_CLIENT_TRANSPORT_PROVIDER iothub_transport;
+#ifdef MQTT_OVER_WS
+        iothub_transport = MQTT_WebSocket_Protocol;
+#else
+        iothub_transport = MQTT_Protocol;
+#endif
+// } Eddy
+
         if (iothub_security_init(IOTHUB_SECURITY_TYPE_SYMMETRIC_KEY) != 0)
         {
             LogError("iothub_security_init failed");
             result = false;
         }
-        else if ((deviceHandle = IoTHubDeviceClient_CreateFromDeviceAuth(g_dpsIothubUri, g_dpsDeviceId, MQTT_Protocol)) == NULL)
+        //else if ((deviceHandle = IoTHubDeviceClient_CreateFromDeviceAuth(g_dpsIothubUri, g_dpsDeviceId, MQTT_Protocol)) == NULL)
+        else if ((deviceHandle = IoTHubDeviceClient_CreateFromDeviceAuth(g_dpsIothubUri, g_dpsDeviceId, iothub_transport)) == NULL)    // Eddy
         {
             LogError("IoTHubDeviceClient_CreateFromDeviceAuth failed");
             result = true;
